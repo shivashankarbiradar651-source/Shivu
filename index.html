@@ -1,0 +1,752 @@
+<!--
+  Kannada Jnanpith Award Winners — Single file static website
+  Requirements:
+  - Only HTML and CSS (no JavaScript)
+  - Includes photos, history, notable works, contributions
+  - Organized by year of the award (chronological)
+  - ~500 lines for a robust, production-style demo
+  - Mobile-friendly, accessible, and clean typography
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Kannada Jnanpith Award Winners</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Typography and base color tokens -->
+  <style>
+    :root {
+      --bg: #0e0f19;        
+      --surface: #15162a;     
+      --primary: #7c3aed;     
+      --primary-2: #a78bfa;   
+      --text: #e6e6f0;        
+      --muted: #b7b7c6;       
+      --border: #262742;      
+      --chip: #1e2040;        
+      --gold: #fbbf24;        
+      --green: #22c55e;       
+      --link: #60a5fa;        
+    }
+
+    
+    * {
+      box-sizing: border-box;
+    }
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: radial-gradient(1200px 600px at 80% -20%, #181a33 10%, var(--bg) 60%),
+                  radial-gradient(800px 400px at 0% 110%, #201a38 10%, var(--bg) 70%);
+      color: var(--text);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, sans-serif;
+      line-height: 1.6;
+    }
+
+    
+    header.site-header {
+      position: relative;
+      padding: 42px 20px 28px;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+    }
+    .site-title {
+      margin: 0;
+      font-size: 2.2rem;
+      letter-spacing: 0.3px;
+    }
+    .site-subtitle {
+      margin: 4px auto 10px;
+      max-width: 800px;
+      color: var(--muted);
+      font-size: 1rem;
+    }
+    .header-badges {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      color: var(--muted);
+      background: rgba(124, 58, 237, 0.08);
+      font-size: 0.85rem;
+      white-space: nowrap;
+    }
+
+    
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 24px 20px 40px;
+    }
+
+    
+    .section {
+      margin: 20px 0 12px;
+    }
+    .section h2 {
+      margin: 0 0 6px;
+      font-size: 1.6rem;
+    }
+    .section p {
+      margin: 0;
+      color: var(--muted);
+    }
+
+   
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 18px;
+    }
+    @media (max-width: 1000px) {
+      .grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    @media (max-width: 640px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    
+    .card {
+      background: linear-gradient(180deg, rgba(124, 58, 237, 0.14), rgba(124, 58, 237, 0.08)), var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+    }
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+      border-color: #34365a;
+    }
+
+    .thumb {
+      position: relative;
+      height: 190px;
+      overflow: hidden;
+      border-bottom: 1px solid var(--border);
+      background: #0d0f25;
+    }
+    .thumb img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+      filter: saturate(1.03) contrast(1.05);
+    }
+    .year-pill {
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      background: rgba(15, 16, 32, 0.8);
+      border: 1px solid var(--border);
+      color: var(--gold);
+      font-weight: 700;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 0.9rem;
+      backdrop-filter: blur(4px);
+    }
+
+   
+    .content {
+      padding: 14px 14px 16px;
+    }
+    .name {
+      margin: 2px 0 6px;
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+    .tagline {
+      margin: 2px 0 10px;
+      color: var(--primary-2);
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+    .summary {
+      color: var(--muted);
+      font-size: 0.92rem;
+      margin-bottom: 8px;
+    }
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin: 10px 0 0;
+    }
+    .chip {
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 0.8rem;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: var(--chip);
+      white-space: nowrap;
+    }
+
+ 
+    details.profile {
+      border-top: 1px dashed var(--border);
+      margin-top: 12px;
+      padding-top: 12px;
+    }
+    details.profile summary {
+      cursor: pointer;
+      list-style: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--link);
+      font-weight: 700;
+      padding: 6px 8px;
+      border-radius: 8px;
+    }
+    details.profile summary::marker {
+      content: "";
+    }
+    details.profile[open] summary {
+      background: rgba(96, 165, 250, 0.1);
+    }
+    .subgrid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-top: 12px;
+    }
+    @media (max-width: 820px) {
+      .subgrid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .block {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      background: rgba(21, 22, 42, 0.6);
+    }
+    .block h4 {
+      margin: 0 0 8px;
+      font-size: 1rem;
+    }
+    .block p {
+      margin: 0 0 8px;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+    .block ul {
+      margin: 0;
+      padding-left: 18px;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .timeline {
+      margin: 22px 0 16px;
+      border-left: 2px solid var(--border);
+      padding-left: 14px;
+    }
+    .timeline-item {
+      margin: 12px 0;
+      position: relative;
+    }
+    .timeline-item::before {
+      content: "";
+      position: absolute;
+      left: -9px;
+      top: 6px;
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: var(--primary);
+      border: 2px solid var(--border);
+    }
+    .timeline-item .t-year {
+      color: var(--gold);
+      font-weight: 700;
+      margin-right: 6px;
+    }
+    .timeline-item .t-text {
+      color: var(--muted);
+    }
+
+   
+    footer.site-footer {
+      border-top: 1px solid var(--border);
+      padding: 14px 20px 24px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.95rem;
+      background: linear-gradient(180deg, rgba(124, 58, 237, 0.10), rgba(15, 16, 32, 0.60));
+    }
+    .footer-links {
+      display: inline-flex;
+      align-items: center;
+      gap: 16px;
+      margin-top: 8px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .footer-links a {
+      color: var(--link);
+      text-decoration: none;
+      border-bottom: 1px dashed transparent;
+      transition: border-color 0.18s ease;
+    }
+    .footer-links a:hover {
+      border-color: var(--link);
+    }
+
+   
+    .sr-only {
+      position: absolute !important;
+      height: 1px; width: 1px;
+      overflow: hidden;
+      clip: rect(1px, 1px, 1px, 1px);
+      white-space: nowrap;
+    }
+  </style>
+</head>
+
+<body>
+  <header class="site-header" role="banner">
+    <h1 class="site-title">Kannada Jnanpith Award Winners</h1>
+    
+    <div class="header-badges">
+      <span class="badge">Language: Kannada</span>
+      <span class="badge">Award: Jnanpith</span>
+      <span class="badge">Years: 1967–2010</span>
+      
+    </div>
+  </header>
+
+  
+  <main class="container" role="main">
+    <section class="section" aria-labelledby="intro-title">
+      <h2 id="intro-title">Overview and timeline</h2>
+      <p>Kannada has produced eight Jnanpith laureates whose poetry, fiction, theatre, and criticism have defined modern Kannada identity.</p>
+
+      
+      <div class="timeline" aria-label="Timeline of awards">
+        <div class="timeline-item">
+          <span class="t-year">1967</span>
+          <span class="t-text">Kuvempu becomes the first Kannada Jnanpith awardee.</span>
+        </div>
+        <div class="timeline-item">
+          <span class="t-year">1973</span>
+          <span class="t-text">D. R. Bendre is honored for his lyrical-poetic mastery.</span>
+        </div>
+        <div class="timeline-item">
+          <span class="t-year">1977</span>
+          <span class="t-text">Shivaram Karanth recognized as a polymath novelist and reformer.</span>
+        </div>
+        <div class="timeline-item">
+          <span class="t-year">1983</span>
+          <span class="t-text">Masti Venkatesha Iyengar — master of short stories.</span>
+        </div>
+        <div class="timeline-item">
+          <span class="t-year">1990</span>
+          <span class="t-text">V. K. Gokak — poet, critic, educationist, epic imagination.</span>
+        </div>
+        <div class="timeline-item">
+          <span class="t-year">1994</span>
+          <span class="t-text">U. R. Ananthamurthy — modernist novelist and public intellectual.</span>
+        </div>
+        <div class="timeline-item">
+          <span class="t-year">1998</span>
+          <span class="t-text">Girish Karnad — playwright-actor, reimagining myth and history.</span>
+        </div>
+        <div class="timeline-item">
+          <span class="t-year">2010</span>
+          <span class="t-text">Chandrashekhara Kambara — poet-playwright, folklorist.</span>
+        </div>
+      </div>
+    </section>
+
+   
+    <section class="section" aria-labelledby="winners-title">
+      <h2 id="winners-title">Awardees by year</h2>
+      
+      <div class="grid" role="list">
+        <!-- 1967 – Kuvempu -->
+        <article class="card" role="listitem" aria-labelledby="kuvempu-title">
+          <div class="thumb">
+        
+            <img src="https://i.pinimg.com/736x/0f/50/3d/0f503d98025d69918fd99ab08af9e522.jpg" alt="Portrait of Kuvempu (K. V. Puttappa)" />
+            <span class="year-pill">1967</span>
+          </div>
+          <div class="content">
+            <h3 id="kuvempu-title" class="name">Kuvempu (K. V. Puttappa)</h3>
+            <div class="tagline">Poet-philosopher; Sri Ramayana Darshanam; “Vishwa Manava”</div>
+            <p class="summary">First Kannada Jnanpith awardee who modernized Kannada epic poetry and articulated Universal Humanism.</p>
+            <div class="chips">
+              <span class="chip">Poetry</span>
+              <span class="chip">Epic</span>
+              <span class="chip">Humanism</span>
+            </div>
+
+            <details class="profile">
+              <summary>Full profile</summary>
+              <div class="subgrid">
+                <div class="block">
+                  <h4>History</h4>
+                  <p>Kuvempu’s work reimagines classical narratives with modern ethical inquiry and a deeply humanist lens, elevating Kannada letters.</p>
+                </div>
+                <div class="block">
+                  <h4>Notable works</h4>
+                  <ul>
+                    <li>Sri Ramayana Darshanam</li>
+                    <li>Malegalalli Madumagalu</li>
+                    <li>Kannage Kaanuva</li>
+                  </ul>
+                </div>
+                <div class="block">
+                  <h4>Contributions</h4>
+                  <ul>
+                    <li>Established “Vishwa Manava” (Universal Humanism) as a cultural ideal</li>
+                    <li>Advanced modern Kannada epic poetry</li>
+                    <li>Influenced education and language reform</li>
+                  </ul>
+                </div>
+              </div>
+            </details>
+          </div>
+        </article>
+
+        <!-- 1973 – D. R. Bendre -->
+        <article class="card" role="listitem" aria-labelledby="bendre-title">
+          <div class="thumb">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRrFmnOKg_3LihNBeLtaeQG4vHk-kY9yaw5uUwg7jTDjhjmp-OSpF9KLsn68IWOs2OtP_g&usqp=CAU" alt="Portrait of D. R. Bendre" />
+            <span class="year-pill">1973</span>
+          </div>
+          <div class="content">
+            <h3 id="bendre-title" class="name">D. R. Bendre</h3>
+            <div class="tagline">Varakavi; lyrical-mystical poet; Naaku Tanti</div>
+            <p class="summary">Fused folk cadence with metaphysical exploration, reshaping lyrical expression in Kannada poetry.</p>
+            <div class="chips">
+              <span class="chip">Poetry</span>
+              <span class="chip">Lyric</span>
+              <span class="chip">Mysticism</span>
+            </div>
+
+            <details class="profile">
+              <summary>Full profile</summary>
+              <div class="subgrid">
+                <div class="block">
+                  <h4>History</h4>
+                  <p>Bendre balanced everyday speech with spiritual reflection, inspiring generations of poets and transforming Kannada lyric traditions.</p>
+                </div>
+                <div class="block">
+                  <h4>Notable works</h4>
+                  <ul>
+                    <li>Naaku Tanti</li>
+                    <li>Kavana-Guchchha</li>
+                    <li>Aralu Maralu</li>
+                  </ul>
+                </div>
+                <div class="block">
+                  <h4>Contributions</h4>
+                  <ul>
+                    <li>Revitalized lyric tradition with folk rhythms</li>
+                    <li>Deepened mystical currents in modern verse</li>
+                    <li>Mentored poetic practice and aesthetics</li>
+                  </ul>
+                </div>
+              </div>
+            </details>
+          </div>
+        </article>
+
+        <!-- 1977 – Shivaram Karanth -->
+        <article class="card" role="listitem" aria-labelledby="karanth-title">
+          <div class="thumb">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/%E0%B2%B6%E0%B2%BF%E0%B2%B5%E0%B2%B0%E0%B2%BE%E0%B2%AE_%E0%B2%95%E0%B2%BE%E0%B2%B0%E0%B2%82%E0%B2%A4.jpg/250px-%E0%B2%B6%E0%B2%BF%E0%B2%B5%E0%B2%B0%E0%B2%BE%E0%B2%AE_%E0%B2%95%E0%B2%BE%E0%B2%B0%E0%B2%82%E0%B2%A4.jpg" alt="Portrait of Shivaram Karanth" />
+            <span class="year-pill">1977</span>
+          </div>
+          <div class="content">
+            <h3 id="karanth-title" class="name">Shivaram Karanth</h3>
+            <div class="tagline">Polymath novelist; Mookajjiya Kanasugalu; reformer & environmentalist</div>
+            <p class="summary">Wrote across genres, interrogated tradition through rational inquiry, and celebrated coastal Karnataka’s lifeworlds.</p>
+            <div class="chips">
+              <span class="chip">Novel</span>
+              <span class="chip">Reform</span>
+              <span class="chip">Environment</span>
+            </div>
+
+            <details class="profile">
+              <summary>Full profile</summary>
+              <div class="subgrid">
+                <div class="block">
+                  <h4>History</h4>
+                  <p>Karanth’s narratives explored social change; he documented folk arts like Yakshagana and advocated for ecological awareness.</p>
+                </div>
+                <div class="block">
+                  <h4>Notable works</h4>
+                  <ul>
+                    <li>Mookajjiya Kanasugalu</li>
+                    <li>Marali Mannige</li>
+                    <li>Chomana Dudi</li>
+                  </ul>
+                </div>
+                <div class="block">
+                  <h4>Contributions</h4>
+                  <ul>
+                    <li>Advanced social reform through literature</li>
+                    <li>Preserved folk arts and Yakshagana</li>
+                    <li>Pioneered environmental thought</li>
+                  </ul>
+                </div>
+              </div>
+            </details>
+          </div>
+        </article>
+
+        <!-- 1983 – Masti Venkatesha Iyengar -->
+        <article class="card" role="listitem" aria-labelledby="masti-title">
+          <div class="thumb">
+            <img src="data:image/jpeg;base64,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" alt="Portrait of Masti Venkatesha Iyengar" />
+            <span class="year-pill">1983</span>
+          </div>
+          <div class="content">
+            <h3 id="masti-title" class="name">Masti Venkatesha Iyengar</h3>
+            <div class="tagline">Master of modern Kannada short story; Chikkaveera Rajendra</div>
+            <p class="summary">Sculpted subtle psychological fiction with precise prose; illuminated ethics and everyday moral choice.</p>
+            <div class="chips">
+              <span class="chip">Short story</span>
+              <span class="chip">Prose</span>
+              <span class="chip">History</span>
+            </div>
+
+            <details class="profile">
+              <summary>Full profile</summary>
+              <div class="subgrid">
+                <div class="block">
+                  <h4>History</h4>
+                  <p>Masti refined Kannada prose aesthetics, established short story craft, and influenced literary institutions and readership.</p>
+                </div>
+                <div class="block">
+                  <h4>Notable works</h4>
+                  <ul>
+                    <li>Chikkaveera Rajendra</li>
+                    <li>Kelavu Sanna Kathegalu</li>
+                    <li>Chennanna Chennamma</li>
+                  </ul>
+                </div>
+                <div class="block">
+                  <h4>Contributions</h4>
+                  <ul>
+                    <li>Pioneered modern Kannada short story</li>
+                    <li>Elevated prose clarity and style</li>
+                    <li>Mentored writers and institutions</li>
+                  </ul>
+                </div>
+              </div>
+            </details>
+          </div>
+        </article>
+
+        <!-- 1990 – V. K. Gokak -->
+        <article class="card" role="listitem" aria-labelledby="gokak-title">
+          <div class="thumb">
+            <img src="data:image/jpeg;base64,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" alt="Portrait of V. K. Gokak" />
+            <span class="year-pill">1990</span>
+          </div>
+          <div class="content">
+            <h3 id="gokak-title" class="name">V. K. Gokak</h3>
+            <div class="tagline">Poet-critic-educationist; Bharatha Sindhu Rashmi</div>
+            <p class="summary">Bridged classical and modern sensibilities; his epic imagination shaped Kannada literary discourse.</p>
+            <div class="chips">
+              <span class="chip">Poetry</span>
+              <span class="chip">Criticism</span>
+              <span class="chip">Education</span>
+            </div>
+
+            <details class="profile">
+              <summary>Full profile</summary>
+              <div class="subgrid">
+                <div class="block">
+                  <h4>History</h4>
+                  <p>Gokak influenced language education policy and brought epic scale to Kannada poetry with intellectual rigor.</p>
+                </div>
+                <div class="block">
+                  <h4>Notable works</h4>
+                  <ul>
+                    <li>Bharatha Sindhu Rashmi</li>
+                    <li>Samudraghosha</li>
+                    <li>Aniketana</li>
+                  </ul>
+                </div>
+                <div class="block">
+                  <h4>Contributions</h4>
+                  <ul>
+                    <li>Synthesized classical and modern aesthetics</li>
+                    <li>Shaped criticism and pedagogy</li>
+                    <li>Expanded epic poetry in Kannada</li>
+                  </ul>
+                </div>
+              </div>
+            </details>
+          </div>
+        </article>
+
+        <!-- 1994 – U. R. Ananthamurthy -->
+        <article class="card" role="listitem" aria-labelledby="ura-title">
+          <div class="thumb">
+            <img src="data:image/jpeg;base64,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" alt="Portrait of U. R. Ananthamurthy" />
+            <span class="year-pill">1994</span>
+          </div>
+          <div class="content">
+            <h3 id="ura-title" class="name">U. R. Ananthamurthy</h3>
+            <div class="tagline">Modernist novelist-critic; Samskara; social and ethical critique</div>
+            <p class="summary">Probed caste, tradition, and modernity with moral clarity; shaped public intellectual life.</p>
+            <div class="chips">
+              <span class="chip">Novel</span>
+              <span class="chip">Modernism</span>
+              <span class="chip">Critique</span>
+            </div>
+
+            <details class="profile">
+              <summary>Full profile</summary>
+              <div class="subgrid">
+                <div class="block">
+                  <h4>History</h4>
+                  <p>Ananthamurthy sparked debates on ethics and society, bringing Kannada modernism to international attention.</p>
+                </div>
+                <div class="block">
+                  <h4>Notable works</h4>
+                  <ul>
+                    <li>Samskara</li>
+                    <li>Bharathipura</li>
+                    <li>Avasthe</li>
+                  </ul>
+                </div>
+                <div class="block">
+                  <h4>Contributions</h4>
+                  <ul>
+                    <li>Challenged caste and orthodoxy</li>
+                    <li>Developed modernist Kannada fiction</li>
+                    <li>Engaged critically with politics and culture</li>
+                  </ul>
+                </div>
+              </div>
+            </details>
+          </div>
+        </article>
+
+        <!-- 1998 – Girish Karnad -->
+        <article class="card" role="listitem" aria-labelledby="karnad-title">
+          <div class="thumb">
+            <img src="data:image/jpeg;base64,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" alt="Portrait of Girish Karnad" />
+            <span class="year-pill">1998</span>
+          </div>
+          <div class="content">
+            <h3 id="karnad-title" class="name">Girish Karnad</h3>
+            <div class="tagline">Playwright-actor; Tughlaq, Hayavadana; myth-history on modern stage</div>
+            <p class="summary">Revitalized Indian theatre by reimagining myths and historical moments for contemporary conflicts.</p>
+            <div class="chips">
+              <span class="chip">Theatre</span>
+              <span class="chip">Myth</span>
+              <span class="chip">Cinema</span>
+            </div>
+
+            <details class="profile">
+              <summary>Full profile</summary>
+              <div class="subgrid">
+                <div class="block">
+                  <h4>History</h4>
+                  <p>Karnad internationalized Kannada theatre, merging folk-mythic structures with modern dramaturgy and also contributed to film.</p>
+                </div>
+                <div class="block">
+                  <h4>Notable works</h4>
+                  <ul>
+                    <li>Tughlaq</li>
+                    <li>Hayavadana</li>
+                    <li>Nagamandala</li>
+                  </ul>
+                </div>
+                <div class="block">
+                  <h4>Contributions</h4>
+                  <ul>
+                    <li>Brought myth and history into modern drama</li>
+                    <li>Expanded theatrical language and reach</li>
+                    <li>Influenced cinema and cultural policy</li>
+                  </ul>
+                </div>
+              </div>
+            </details>
+          </div>
+        </article>
+
+        <!-- 2010 – Chandrashekhara Kambara -->
+        <article class="card" role="listitem" aria-labelledby="kambara-title">
+          <div class="thumb">
+            <img src="data:image/jpeg;base64,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" alt="Portrait of Chandrashekhara Kambara" />
+            <span class="year-pill">2010</span>
+          </div>
+          <div class="content">
+            <h3 id="kambara-title" class="name">Chandrashekhara Kambara</h3>
+            <div class="tagline">Poet-playwright-folklorist; Jokumaraswamy; North Karnataka folk idioms</div>
+            <p class="summary">Draws deeply from folk belief, language, and ritual, staging rural life with lyrical intensity and cultural insight.</p>
+            <div class="chips">
+              <span class="chip">Folklore</span>
+              <span class="chip">Poetry</span>
+              <span class="chip">Drama</span>
+            </div>
+
+            <details class="profile">
+              <summary>Full profile</summary>
+              <div class="subgrid">
+                <div class="block">
+                  <h4>History</h4>
+                  <p>Kambara preserved and celebrated North Karnataka’s folk heritage while building institutions for arts and letters.</p>
+                </div>
+                <div class="block">
+                  <h4>Notable works</h4>
+                  <ul>
+                    <li>Jokumaraswamy</li>
+                    <li>Sirithanakke Sari</li>
+                    <li>Shivaratri</li>
+                  </ul>
+                </div>
+                <div class="block">
+                  <h4>Contributions</h4>
+                  <ul>
+                    <li>Elevated folk idioms in modern drama</li>
+                    <li>Expanded musicality and ritual in theatre</li>
+                    <li>Institution-building for Kannada arts</li>
+                  </ul>
+                </div>
+              </div>
+            </details>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer" role="contentinfo">
+    <div>© 2025 Kannada Literature Archive — honoring Jnanpith awardees</div>
+    <div class="footer-links" aria-label="Helpful links">
+      <a href="#" aria-label="About this archive">About</a>
+      <a href="#" aria-label="Contact the maintainers">Contact</a>
+      <a href="#" aria-label="Contribute biographies">Contribute</a>
+    </div>
+  </footer>
+</body>
+</html>
